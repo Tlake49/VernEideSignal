@@ -13,7 +13,7 @@
   const next = document.getElementById('nextPage');
   if (!list) return;
   const availableIssues = list.dataset.currentOnly === 'true' ? content.issues.slice(0, 1) : content.issues;
-  let issue = availableIssues[0], pageNumber = 1, flipping = false;
+  let issue = availableIssues[0], pageNumber = 1, flipping = false, drag = null;
 
   list.innerHTML = availableIssues.map((item,i) => `<button class="issue-choice${i===0?' active':''}" data-issue="${item.id}"><strong>${item.title}</strong><span>${item.pages} pages · ${item.kicker}</span></button>`).join('');
 
@@ -42,10 +42,14 @@
     prev.disabled = pageNumber === 1;
     next.disabled = pageNumber >= issue.pages;
   }
+  function targetPage(direction) {
+    const target = direction > 0 ? (pageNumber === 1 ? 2 : pageNumber + 2) : (pageNumber <= 2 ? 1 : pageNumber - 2);
+    return target >= 1 && target <= issue.pages ? target : null;
+  }
   function turn(direction) {
     if (flipping) return;
-    const target = direction > 0 ? (pageNumber === 1 ? 2 : pageNumber + 2) : (pageNumber <= 2 ? 1 : pageNumber - 2);
-    if (target < 1 || target > issue.pages) return;
+    const target = targetPage(direction);
+    if (target === null) return;
     flipping = true;
     if (pageNumber === 1) book.classList.add('from-cover');
     book.classList.add(direction > 0 ? 'flipping-next' : 'flipping-prev');
@@ -54,13 +58,91 @@
   }
   list.addEventListener('click', e => {
     const button = e.target.closest('[data-issue]'); if (!button) return;
+    resetDrag();
     issue = availableIssues.find(i => i.id === button.dataset.issue); pageNumber = 1;
     list.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === button)); render();
   });
   prev.addEventListener('click', () => turn(-1)); next.addEventListener('click', () => turn(1));
   document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') turn(-1); if (e.key === 'ArrowRight') turn(1); });
-  let startX = null;
-  book.addEventListener('pointerdown',e => startX=e.clientX);
-  book.addEventListener('pointerup',e => { if(startX===null)return; const d=e.clientX-startX; if(Math.abs(d)>45)turn(d<0?1:-1); startX=null; });
+
+  function resetDrag() {
+    book.classList.remove('dragging','drag-next','drag-prev','settling');
+    book.style.removeProperty('--page-rotation');
+    book.style.removeProperty('--page-brightness');
+    drag = null;
+  }
+
+  function settleDrag(commit) {
+    if (!drag || !drag.direction) { resetDrag(); return; }
+    const direction = drag.direction;
+    const target = targetPage(direction);
+    if (target === null) { resetDrag(); return; }
+    flipping = true;
+    book.classList.add('settling');
+    book.style.setProperty('--page-rotation', `${commit ? (direction > 0 ? -92 : 92) : 0}deg`);
+    book.style.setProperty('--page-brightness', commit ? '.7' : '1');
+    window.setTimeout(() => {
+      if (commit) pageNumber = target;
+      resetDrag();
+      render();
+      flipping = false;
+    }, 210);
+  }
+
+  book.addEventListener('dragstart', e => e.preventDefault());
+  book.addEventListener('pointerdown', e => {
+    if (flipping || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    drag = {
+      id: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      lastX: e.clientX,
+      lastTime: performance.now(),
+      velocity: 0,
+      direction: 0,
+      progress: 0
+    };
+    book.setPointerCapture(e.pointerId);
+    book.classList.add('dragging');
+  });
+  book.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+    if (!drag.direction && Math.abs(dx) < 5) return;
+    if (!drag.direction && Math.abs(dy) > Math.abs(dx)) return;
+
+    const direction = dx < 0 ? 1 : -1;
+    if (targetPage(direction) === null) {
+      book.classList.remove('drag-next','drag-prev');
+      book.style.setProperty('--page-rotation','0deg');
+      drag.direction = 0;
+      drag.progress = 0;
+      return;
+    }
+
+    e.preventDefault();
+    drag.direction = direction;
+    book.classList.toggle('drag-next', direction > 0);
+    book.classList.toggle('drag-prev', direction < 0);
+    const width = Math.max(book.getBoundingClientRect().width * .55, 1);
+    drag.progress = Math.min(Math.abs(dx) / width, 1);
+    const rotation = drag.progress * 88 * (direction > 0 ? -1 : 1);
+    book.style.setProperty('--page-rotation', `${rotation}deg`);
+    book.style.setProperty('--page-brightness', String(1 - drag.progress * .3));
+
+    const now = performance.now();
+    const elapsed = Math.max(now - drag.lastTime, 1);
+    drag.velocity = (e.clientX - drag.lastX) / elapsed;
+    drag.lastX = e.clientX;
+    drag.lastTime = now;
+  });
+  book.addEventListener('pointerup', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const velocityTowardTurn = drag.direction > 0 ? -drag.velocity : drag.velocity;
+    const commit = drag.progress >= .24 || (drag.progress >= .06 && velocityTowardTurn > .5);
+    settleDrag(commit);
+  });
+  book.addEventListener('pointercancel', () => settleDrag(false));
   render();
 })();

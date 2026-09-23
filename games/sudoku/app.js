@@ -13,7 +13,7 @@
   const deleteBtn = document.getElementById("deleteBtn");
   const shareBtn = document.getElementById("shareBtn");
 
-  const THEME_KEY = "verdleTheme";
+  const THEME_KEY = "signalGamesTheme";
 
   const DIFFICULTY_CLUES = {
     easy: 40,
@@ -46,7 +46,7 @@
 
   function initTheme() {
     const stored = localStorage.getItem(THEME_KEY);
-    applyTheme(stored || "dark");
+    applyTheme(stored || "light");
   }
 
   function getDaySeed() {

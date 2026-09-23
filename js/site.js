@@ -7,6 +7,47 @@
     menu.setAttribute('aria-expanded', String(open));
   });
 
+  const coverStage = document.querySelector('.cover-stage');
+  if (coverStage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let trackingReady = false;
+    let trackingTimer = null;
+    let frame = null;
+
+    coverStage.addEventListener('pointerenter', e => {
+      if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      window.clearTimeout(trackingTimer);
+      trackingTimer = window.setTimeout(() => {
+        trackingReady = true;
+        coverStage.classList.add('is-tracking');
+      }, 280);
+    });
+
+    coverStage.addEventListener('pointermove', e => {
+      if (!trackingReady || (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen')) return;
+      const rect = coverStage.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - .5) * 2;
+      const y = ((e.clientY - rect.top) / rect.height - .5) * 2;
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        coverStage.style.setProperty('--cover-shift-x', `${x * 9}px`);
+        coverStage.style.setProperty('--cover-shift-y', `${y * 7}px`);
+        coverStage.style.setProperty('--cover-tilt-x', `${y * -5}deg`);
+        coverStage.style.setProperty('--cover-tilt-y', `${x * 7}deg`);
+        coverStage.style.setProperty('--tab-shift-x', `${x * 14}px`);
+        coverStage.style.setProperty('--tab-shift-y', `${y * 10}px`);
+      });
+    });
+
+    coverStage.addEventListener('pointerleave', () => {
+      window.clearTimeout(trackingTimer);
+      if (frame) cancelAnimationFrame(frame);
+      frame = null;
+      trackingReady = false;
+      coverStage.classList.remove('is-tracking');
+      ['--cover-shift-x','--cover-shift-y','--cover-tilt-x','--cover-tilt-y','--tab-shift-x','--tab-shift-y'].forEach(property => coverStage.style.removeProperty(property));
+    });
+  }
+
   const modal = document.getElementById('articleModal');
   const modalContent = document.getElementById('articleContent');
   let returnFocus = null;
