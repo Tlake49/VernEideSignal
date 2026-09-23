@@ -132,6 +132,8 @@ body.modal-open .site-shell { filter: blur(7px) brightness(.62); transform: scal
 .game-feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
 .game-feature { min-height:460px; border-radius:28px; padding:40px; overflow:hidden; position:relative; display:flex; flex-direction:column; color:white; background:var(--ink); }
 .game-feature.sudoku { background:var(--medium-blue); }
+.game-feature.sudoku .eyebrow { color:#fff; }
+.game-feature.sudoku .eyebrow::before { background:#fff; }
 .game-feature h2 { font:400 70px/.9 "Gotham Condensed", "League Gothic", "Arial Narrow", sans-serif; letter-spacing:.02em; text-transform:uppercase; margin:16px 0; }
 .game-feature p { color:#dbe8ef; line-height:1.6; max-width:420px; }
 .game-feature .button { align-self:flex-start; margin-top:auto; background:white; color:var(--ink); }
