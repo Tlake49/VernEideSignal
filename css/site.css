@@ -129,19 +129,32 @@ body.modal-open .site-shell { filter: blur(7px) brightness(.62); transform: scal
 .issue-note p { color:var(--muted); margin:0; line-height:1.5; }
 .download-link { color:var(--blue); font-weight:800; white-space:nowrap; }
 
-.game-feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.game-feature-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
 .game-feature { min-height:460px; border-radius:28px; padding:40px; overflow:hidden; position:relative; display:flex; flex-direction:column; color:white; background:var(--ink); }
 .game-feature.sudoku { background:var(--medium-blue); }
 .game-feature.sudoku .eyebrow { color:#fff; }
 .game-feature.sudoku .eyebrow::before { background:#fff; }
+.game-feature.sudoku p { position:relative; z-index:2; }
+.game-feature.verdle .eyebrow { color:var(--baby-blue); }
+.game-feature.toss { color:var(--ink); background:var(--baby-blue); }
+.game-feature.toss p { color:var(--ink-2); }
+.game-feature.toss .eyebrow { color:var(--ink); }
+.game-feature.toss .eyebrow::before { background:var(--ink); }
+.game-feature.toss .button { background:var(--ink); color:white; }
 .game-feature h2 { font:400 70px/.9 "Gotham Condensed", "League Gothic", "Arial Narrow", sans-serif; letter-spacing:.02em; text-transform:uppercase; margin:16px 0; }
 .game-feature p { color:#dbe8ef; line-height:1.6; max-width:420px; }
-.game-feature .button { align-self:flex-start; margin-top:auto; background:white; color:var(--ink); }
+.game-feature .button { position:relative; z-index:2; align-self:flex-start; margin-top:auto; background:white; color:var(--ink); }
 .tile-art { position:absolute; right:-8px; bottom:-18px; display:grid; grid-template-columns:repeat(5,54px); gap:6px; transform:rotate(-8deg); opacity:.95; }
 .tile-art span { width:54px;height:54px;display:grid;place-items:center;background:#42546a;color:white;font-weight:800;font-size:22px;border-radius:4px; }
 .tile-art .blue { background:#005CB9; }.tile-art .yellow{background:#F5A623;color:var(--ink)}
 .sudoku-art { position:absolute; width:250px; height:250px; right:-20px; bottom:-18px; display:grid;grid-template-columns:repeat(9,1fr); background:white;border:3px solid var(--ink);transform:rotate(7deg); }
 .sudoku-art span { border:1px solid #b6c1c8; display:grid;place-items:center;color:var(--ink);font-weight:700; }
+.toss-art { position:absolute; width:238px; height:238px; right:-24px; bottom:-24px; display:grid; grid-template-columns:repeat(3,1fr); background:#fff; border:4px solid var(--ink); border-radius:18px; transform:rotate(-7deg); box-shadow:10px 12px 0 rgba(6,28,52,.14); }
+.toss-art span { display:grid; place-items:center; border-right:4px solid var(--ink); border-bottom:4px solid var(--ink); font:700 58px/.8 "Montserrat",sans-serif; }
+.toss-art span:nth-child(3n) { border-right:0; }
+.toss-art span:nth-child(n+7) { border-bottom:0; }
+.toss-art .x { color:#e60012; }
+.toss-art .o { color:var(--medium-blue); }
 
 .article-modal { position:fixed; inset:0; z-index:100; display:none; place-items:center; padding:28px; }
 .article-modal.open { display:grid; }

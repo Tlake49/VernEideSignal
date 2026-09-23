@@ -5,7 +5,7 @@ A standalone HTML/CSS/JavaScript site for Vern Eide Signal that runs locally and
 - Home page with the newest issue and its current stories
 - Readable article overlays that dim and blur the page behind them
 - Articles / Previous Issues page with a keyboard-, click- and swipe-friendly page-turning reader
-- Games page with working daily Verdle and Sudoku games
+- Games page with working Verdle, Sudoku and physics-powered Tic Tac Toss games
 - Source PDFs plus browser-sized page images for the issue reader
 - A content structure designed to translate cleanly into WordPress later
 
@@ -49,7 +49,8 @@ signal-site/
 └── games/
     ├── shared/css/         Original shared game styling
     ├── verdle/             Verdle page, styling, word list and logic
-    └── sudoku/             Sudoku page, styling and logic
+    ├── sudoku/             Sudoku page, styling and logic
+    └── tic-tac-toss/       Physics Tic-Tac-Toe page, styling and logic
 ```
 
 The uploaded game HTML and CSS were preserved and integrated. The uploaded bundle referenced two `app.js` files that were not included in the available attachments, so replacement daily game logic is included. Both games use a local calendar date as their seed, and progress is stored by date in `localStorage`. Sudoku also stores each difficulty separately.
@@ -114,5 +115,6 @@ That model preserves the current experience while letting an editor add a new is
 
 - Verdle selects from the short editorial answer list in `games/verdle/app.js` and validates guesses against `valid-words.txt`.
 - Sudoku deterministically generates one puzzle per date and difficulty.
+- Tic Tac Toss supports one player versus the CPU or two local players and loads Matter.js from its public CDN.
 - Saved game keys include the date, so a new local day creates new boards without deleting past results.
 - Keep the date-key and storage-key formats stable when moving the games into WordPress; changing them will reset players' in-progress games.

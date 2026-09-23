@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Play Tic Tac Toss, a tactile physics-powered Tic-Tac-Toe game from Vern Eide Signal.">
+  <title>Tic Tac Toss | Vern Eide Signal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=League+Gothic&family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/css/site.css?v=4">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="tic-tac-toss">
+  <header class="site-header" data-auto-hide-header>
+    <div class="site-header__inner">
+      <a class="signal-brand" href="../../" aria-label="Vern Eide Signal home"><img class="signal-brand-logo" src="../../assets/images/eide-effect-logo.png" alt="The Eide Effect"><span class="signal-brand-word">Vern Eide Signal</span></a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../../">Home</a>
+        <a href="../../articles/">Articles &amp; Issues</a>
+        <a href="../" aria-current="page" data-no-transition>Play games</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <header class="masthead">
+      <div class="wordmark" aria-label="Tic Tac Toss">
+        <span class="wordmark-kicker">A tiny physical game</span>
+        <div class="game-title-line"><a class="game-back" href="../" aria-label="Back to games" data-no-transition>←<span class="sr-only">Back to games</span></a><h1>Tic Tac <span>Toss</span></h1></div>
+      </div>
+
+      <div class="control-cluster">
+        <div class="mode-switch" role="group" aria-label="Game mode">
+          <button class="mode-button active" type="button" data-mode="cpu" aria-pressed="true">1P <span>vs CPU</span></button>
+          <button class="mode-button" type="button" data-mode="friend" aria-pressed="false">2P <span>local</span></button>
+        </div>
+        <button class="reset-button" id="resetButton" type="button">New round ↻</button>
+      </div>
+    </header>
+
+    <section class="playfield" id="playfield">
+      <div class="score-strip" aria-label="Score">
+        <span><b class="x-dot"></b>X <strong id="xScore">0</strong></span>
+        <span class="round-label" id="roundLabel">Round 01</span>
+        <span><b class="o-dot"></b>O <strong id="oScore">0</strong></span>
+      </div>
+
+      <canvas id="gameCanvas" role="application" aria-label="Physics Tic-Tac-Toe board. Drag a piece from its bin onto an open square."></canvas>
+
+      <div class="status-card" aria-live="polite">
+        <span class="status-light" id="statusLight"></span>
+        <p id="statusText">Grab an X and toss it onto the grid.</p>
+      </div>
+
+      <div class="instruction" aria-hidden="true">
+        <span>01 — grab</span><span>02 — drag</span><span>03 — release</span>
+      </div>
+
+      <div class="load-error" id="loadError" hidden>
+        The physics engine could not load. Check your connection and refresh.
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/js/include.js?v=4" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js" defer></script>
+  <script src="./game.js" defer></script>
+</body>
+</html>
