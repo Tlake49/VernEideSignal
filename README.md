@@ -35,9 +35,9 @@ Do not add a `CNAME` file until the domain is owned and ready to connect; GitHub
 
 ```text
 signal-site/
-├── index.html              Home
-├── articles.html           Web articles and issue reader
-├── games.html              Games landing page
+├── index.html              Home (`/`)
+├── articles/index.html     Web articles and issue reader (`/articles/`)
+├── games/index.html        Games landing page (`/games/`)
 ├── css/site.css            Shared Signal visual system
 ├── js/
 │   ├── content.js          Issue and article content
