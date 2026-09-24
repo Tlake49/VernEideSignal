@@ -77,7 +77,9 @@ button { color: inherit; font: inherit; }
 .mode-switch { display: flex; border: var(--line); border-radius: 999px; padding: 4px; background: #fff; box-shadow: 5px 5px 0 var(--ink); }
 
 .mode-button,
-.reset-button {
+.reset-button,
+.help-button,
+.end-round-button {
   border: 0;
   cursor: pointer;
   font-weight: 900;
@@ -105,6 +107,16 @@ button { color: inherit; font: inherit; }
   border-radius: 3px;
   background: var(--baby-blue);
   box-shadow: 5px 5px 0 var(--ink);
+}
+
+.help-button {
+  width: 48px;
+  height: 48px;
+  border: var(--line);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--ink);
+  font-size: 20px;
 }
 
 .playfield { position: relative; min-height: 620px; overflow: hidden; isolation: isolate; }
@@ -177,12 +189,49 @@ button { color: inherit; font: inherit; }
   top: 22px;
   display: flex;
   gap: 12px;
-  font: 500 9px/1 "DM Mono", monospace;
+  padding: 9px 11px;
+  border: 1px solid rgba(6,28,52,.2);
+  border-radius: 999px;
+  background: rgba(255,255,255,.8);
+  font: 700 11px/1 "DM Mono", monospace;
   text-transform: uppercase;
   letter-spacing: .06em;
 }
 
 .instruction span { border-bottom: 2px solid currentColor; padding-bottom: 4px; }
+
+.end-round-button {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  transform: translate(-50%,-50%) rotate(-1deg);
+  min-height: 58px;
+  padding: 0 24px;
+  border: 3px solid var(--ink);
+  border-radius: 4px;
+  background: var(--baby-blue);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.end-round-button:hover { transform:translate(-50%,-54%) rotate(-1deg); }
+
+.toss-help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.toss-help-modal[hidden] { display:none; }
+.toss-help-backdrop { position:absolute; inset:0; background:rgba(6,28,52,.72); backdrop-filter:blur(6px); }
+.toss-help-card { position:relative; width:min(560px,100%); padding:34px; border:3px solid var(--ink); border-radius:18px; background:var(--paper); box-shadow:12px 14px 0 rgba(0,0,0,.28); }
+.toss-help-card h2 { margin:8px 0 20px; font:400 64px/.85 "League Gothic",Impact,sans-serif; text-transform:uppercase; }
+.toss-help-card ol { padding-left:22px; }
+.toss-help-card li,.toss-help-card p { font-size:15px; line-height:1.6; }
+.toss-help-close { position:absolute; top:14px; right:14px; width:42px; height:42px; border:0; border-radius:50%; background:var(--ink); color:#fff; font-size:25px; cursor:pointer; }
+body.toss-modal-open { overflow:hidden; }
 
 .load-error {
   position: absolute;
@@ -226,19 +275,28 @@ button { color: inherit; font: inherit; }
 @media (max-width: 820px) {
   .masthead { align-items: flex-start; min-height: 154px; }
   .control-cluster { max-width: 330px; }
-  .instruction { display: none; }
   .status-card { top: 70px; }
 }
 
 @media (max-width: 600px) {
-  .game-shell { grid-template-rows: auto minmax(680px, 1fr); }
-  .masthead { padding: 16px; display: grid; min-height: 190px; }
-  .wordmark h1 { font-size: 68px; }
-  .control-cluster { justify-content: flex-start; max-width: none; }
-  .mode-button { padding-inline: 12px; }
-  .reset-button { min-height: 50px; }
-  .score-strip { top: 12px; }
-  .status-card { top: 62px; left: 50%; transform: translateX(-50%) rotate(-1deg); width: min(330px, calc(100% - 28px)); }
+  .game-shell { min-height:100svh; grid-template-rows:auto minmax(520px,1fr); }
+  .masthead { padding:12px 14px; display:grid; min-height:142px; gap:10px; }
+  .wordmark-kicker { font-size:8px; }
+  .wordmark h1 { font-size:52px; }
+  .game-title-line { gap:8px; }
+  .game-back { width:32px; height:32px; font-size:25px; }
+  .control-cluster { justify-content:space-between; max-width:none; flex-wrap:nowrap; gap:8px; }
+  .mode-button { min-height:38px; padding-inline:10px; font-size:13px; }
+  .mode-switch { box-shadow:3px 3px 0 var(--ink); }
+  .help-button { width:42px; height:42px; flex:0 0 auto; box-shadow:3px 3px 0 var(--ink); }
+  .reset-button { min-height:44px; padding-inline:12px; font-size:12px; box-shadow:3px 3px 0 var(--ink); }
+  .playfield { min-height:520px; }
+  .score-strip { top:8px; }
+  .status-card { top:58px; left:50%; transform:translateX(-50%) rotate(-1deg); width:min(340px,calc(100% - 24px)); }
+  .instruction { left:50%; right:auto; top:calc(var(--bin-top, 370px) - 46px); transform:translateX(-50%); width:max-content; max-width:calc(100% - 20px); gap:8px; padding:8px 10px; font-size:10px; }
+  .end-round-button { min-height:52px; padding-inline:18px; }
+  .toss-help-card { padding:28px 22px 24px; }
+  .toss-help-card h2 { font-size:54px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

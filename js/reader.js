@@ -11,21 +11,36 @@
   const download = document.getElementById('issueDownload');
   const prev = document.getElementById('prevPage');
   const next = document.getElementById('nextPage');
+  const issueSelect = document.getElementById('issueSelect');
+  const viewToggle = document.getElementById('readerViewToggle');
   if (!list) return;
   const availableIssues = list.dataset.currentOnly === 'true' ? content.issues.slice(0, 1) : content.issues;
-  let issue = availableIssues[0], pageNumber = 1, flipping = false, drag = null;
+  const mobileReader = window.matchMedia('(max-width: 680px)');
+  let issue = availableIssues[0], pageNumber = 1, flipping = false, drag = null, mobileSpread = false;
 
   list.innerHTML = availableIssues.map((item,i) => `<button class="issue-choice${i===0?' active':''}" data-issue="${item.id}"><strong>${item.title}</strong><span>${item.pages} pages · ${item.kicker}</span></button>`).join('');
+  if (issueSelect) issueSelect.innerHTML = availableIssues.map(item => `<option value="${item.id}">${item.title}</option>`).join('');
+
+  function isMobileSingle() {
+    return mobileReader.matches && !mobileSpread;
+  }
+
+  function normalizeSpreadPage() {
+    if (pageNumber > 1 && pageNumber % 2 !== 0) pageNumber -= 1;
+  }
 
   function render() {
     const isCover = pageNumber === 1;
     const isLastSingle = pageNumber === issue.pages;
-    book.classList.toggle('cover', isCover);
-    book.classList.toggle('single-last', isLastSingle);
+    const singleMobile = isMobileSingle();
+    book.classList.toggle('mobile-single', singleMobile);
+    book.classList.toggle('mobile-spread', mobileReader.matches && mobileSpread);
+    book.classList.toggle('cover', isCover || singleMobile);
+    book.classList.toggle('single-last', !singleMobile && isLastSingle);
     leftPage.src = `assets/pages/${issue.id}/page-${pageNumber}.jpg`;
     leftPage.alt = `${issue.title}, page ${pageNumber}`;
     const rightNumber = pageNumber + 1;
-    if (!isCover && !isLastSingle && rightNumber <= issue.pages) {
+    if (!singleMobile && !isCover && !isLastSingle && rightNumber <= issue.pages) {
       rightPage.src = `assets/pages/${issue.id}/page-${rightNumber}.jpg`;
       rightPage.alt = `${issue.title}, page ${rightNumber}`;
       rightPage.hidden = false;
@@ -36,14 +51,21 @@
     }
     title.textContent = issue.title;
     subtitle.textContent = issue.kicker;
-    count.textContent = isCover ? `Cover · Page 1 of ${issue.pages}` : rightNumber <= issue.pages ? `Pages ${pageNumber}–${rightNumber} of ${issue.pages}` : `Back cover · Page ${pageNumber} of ${issue.pages}`;
+    count.textContent = singleMobile ? `${isCover ? 'Cover · ' : ''}Page ${pageNumber} of ${issue.pages}` : isCover ? `Cover · Page 1 of ${issue.pages}` : rightNumber <= issue.pages ? `Pages ${pageNumber}–${rightNumber} of ${issue.pages}` : `Back cover · Page ${pageNumber} of ${issue.pages}`;
     note.textContent = issue.note;
     download.href = issue.pdf;
     prev.disabled = pageNumber === 1;
     next.disabled = pageNumber >= issue.pages;
+    if (issueSelect) issueSelect.value = issue.id;
+    if (viewToggle) {
+      viewToggle.textContent = mobileSpread ? 'View single page' : 'View full spread';
+      viewToggle.setAttribute('aria-pressed', String(mobileSpread));
+    }
   }
   function targetPage(direction) {
-    const target = direction > 0 ? (pageNumber === 1 ? 2 : pageNumber + 2) : (pageNumber <= 2 ? 1 : pageNumber - 2);
+    const target = isMobileSingle()
+      ? pageNumber + direction
+      : direction > 0 ? (pageNumber === 1 ? 2 : pageNumber + 2) : (pageNumber <= 2 ? 1 : pageNumber - 2);
     return target >= 1 && target <= issue.pages ? target : null;
   }
   function turn(direction) {
@@ -62,6 +84,26 @@
     issue = availableIssues.find(i => i.id === button.dataset.issue); pageNumber = 1;
     list.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === button)); render();
   });
+  if (issueSelect) issueSelect.addEventListener('change', () => {
+    resetDrag();
+    issue = availableIssues.find(item => item.id === issueSelect.value) || availableIssues[0];
+    pageNumber = 1;
+    list.querySelectorAll('button').forEach(button => button.classList.toggle('active', button.dataset.issue === issue.id));
+    render();
+  });
+  if (viewToggle) viewToggle.addEventListener('click', () => {
+    resetDrag();
+    mobileSpread = !mobileSpread;
+    if (mobileSpread) normalizeSpreadPage();
+    render();
+  });
+  const handleReaderBreakpoint = () => {
+    resetDrag();
+    if (!isMobileSingle()) normalizeSpreadPage();
+    render();
+  };
+  if (mobileReader.addEventListener) mobileReader.addEventListener('change', handleReaderBreakpoint);
+  else mobileReader.addListener(handleReaderBreakpoint);
   prev.addEventListener('click', () => turn(-1)); next.addEventListener('click', () => turn(1));
   document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') turn(-1); if (e.key === 'ArrowRight') turn(1); });
 

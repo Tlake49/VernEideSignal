@@ -101,6 +101,7 @@ body.modal-open .site-shell { filter: blur(7px) brightness(.62); transform: scal
 .issue-choice span { color:var(--muted); font-size:12px; margin-top:4px; }
 .issue-choice.active { color:white; background:var(--blue); border-color:var(--blue); }
 .reader { background:#e4f0f6; border-radius:28px; padding:28px; min-height:650px; box-shadow:inset 0 0 0 1px rgba(16,37,61,.09); }
+.reader-mobile-tools { display:none; }
 .reader-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; }
 .reader-title strong,.reader-title span { display:block; }
 .reader-title span { color:var(--muted); font-size:12px; margin-top:3px; }
@@ -144,12 +145,12 @@ body.modal-open .site-shell { filter: blur(7px) brightness(.62); transform: scal
 .game-feature h2 { font:400 70px/.9 "Gotham Condensed", "League Gothic", "Arial Narrow", sans-serif; letter-spacing:.02em; text-transform:uppercase; margin:16px 0; }
 .game-feature p { color:#dbe8ef; line-height:1.6; max-width:420px; }
 .game-feature .button { position:relative; z-index:2; align-self:flex-start; margin-top:auto; background:white; color:var(--ink); }
-.tile-art { position:absolute; right:-8px; bottom:-18px; display:grid; grid-template-columns:repeat(5,54px); gap:6px; transform:rotate(-8deg); opacity:.95; }
+.tile-art { position:absolute; right:-8px; bottom:-18px; display:grid; grid-template-columns:repeat(5,54px); gap:6px; transform:rotate(-8deg); opacity:.42; }
 .tile-art span { width:54px;height:54px;display:grid;place-items:center;background:#42546a;color:white;font-weight:800;font-size:22px;border-radius:4px; }
 .tile-art .blue { background:#005CB9; }.tile-art .yellow{background:#F5A623;color:var(--ink)}
-.sudoku-art { position:absolute; width:250px; height:250px; right:-20px; bottom:-18px; display:grid;grid-template-columns:repeat(9,1fr); background:white;border:3px solid var(--ink);transform:rotate(7deg); }
+.sudoku-art { position:absolute; width:250px; height:250px; right:-20px; bottom:-18px; display:grid;grid-template-columns:repeat(9,1fr); background:white;border:3px solid var(--ink);transform:rotate(7deg); opacity:.42; }
 .sudoku-art span { border:1px solid #b6c1c8; display:grid;place-items:center;color:var(--ink);font-weight:700; }
-.toss-art { position:absolute; width:238px; height:238px; right:-24px; bottom:-24px; display:grid; grid-template-columns:repeat(3,1fr); background:#fff; border:4px solid var(--ink); border-radius:18px; transform:rotate(-7deg); box-shadow:10px 12px 0 rgba(6,28,52,.14); }
+.toss-art { position:absolute; width:238px; height:238px; right:-24px; bottom:-24px; display:grid; grid-template-columns:repeat(3,1fr); background:#fff; border:4px solid var(--ink); border-radius:18px; transform:rotate(-7deg); box-shadow:10px 12px 0 rgba(6,28,52,.14); opacity:.42; }
 .toss-art span { display:grid; place-items:center; border-right:4px solid var(--ink); border-bottom:4px solid var(--ink); font:700 58px/.8 "Montserrat",sans-serif; }
 .toss-art span:nth-child(3n) { border-right:0; }
 .toss-art span:nth-child(n+7) { border-bottom:0; }
@@ -189,20 +190,46 @@ body.modal-open .site-shell { filter: blur(7px) brightness(.62); transform: scal
 }
 @media (max-width:680px) {
   .nav-wrap { min-height:70px;padding:0 18px; }
-  .site-nav { display:none; position:absolute; left:0;right:0;top:70px;background:var(--ink);padding:16px 18px 22px;flex-direction:column;align-items:stretch;border-bottom:1px solid rgba(158,220,245,.24); }
+  .site-nav { display:none; position:absolute; left:0;right:0;top:70px;background:var(--baby-blue);padding:8px 18px 16px;flex-direction:column;align-items:stretch;gap:0;border-bottom:1px solid rgba(6,28,52,.2);box-shadow:0 18px 35px rgba(6,28,52,.22); }
   .site-nav.open { display:flex; }
+  .site-nav a { color:var(--ink); font-size:18px; text-align:center; padding:17px 12px; border-radius:0; border-bottom:1px solid rgba(6,28,52,.18); }
+  .site-nav a:hover,.site-nav a[aria-current="page"] { color:var(--ink); background:rgba(255,255,255,.28); }
+  .site-nav .nav-games { margin-top:10px; border:0; border-radius:999px; color:#fff!important; background:var(--ink)!important; }
   .menu-button { display:block; }
   .hero-inner { padding-inline:20px;gap:20px; }
+  .hero-inner > div:first-child { text-align:center; }
+  .hero .eyebrow,.hero .button-row { justify-content:center; }
+  .hero-copy { margin-inline:auto; }
   .hero h1 { font-size:58px; }
+  .page-hero-inner { text-align:center; }
+  .page-hero .eyebrow { justify-content:center; }
+  .page-hero p { margin-inline:auto; }
   .section,.dispatch-inner { padding:64px 20px; }
   .section-head { align-items:start;flex-direction:column; }
   .article-card,.article-card:first-child,.article-card:nth-child(2) { grid-column:1/-1; min-height:250px; }
   .brand-logo { width:74px; height:34px; }.brand-word{font-size:29px}
   .page-fan { min-height:330px; }.page-fan img{width:210px}.page-fan img:nth-child(2){left:32%}
-  .issue-list { grid-template-columns:1fr; }
-  .reader { padding:16px;min-height:420px; }.book-stage{min-height:340px}.book{width:100%}.book.cover,.book.single-last{width:56%}
+  .archive-layout > .issue-list { display:none; }
+  .reader-mobile-tools { display:flex; align-items:end; justify-content:space-between; gap:10px; margin:0 4px 14px; }
+  .issue-select-wrap { flex:1; color:var(--ink); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .issue-select-wrap select { width:100%; min-height:44px; margin-top:5px; padding:0 34px 0 12px; border:1px solid rgba(6,28,52,.2); border-radius:12px; background:#fff; color:var(--ink); font:700 14px/1 "Gotham","Montserrat",sans-serif; }
+  .current-reader .issue-select-wrap { display:none; }
+  #readerViewToggle { min-height:44px; padding:0 13px; border:0; border-radius:999px; background:var(--ink); color:#fff; font-weight:800; white-space:nowrap; }
+  #readerViewToggle[aria-pressed="true"] { background:var(--medium-blue); }
+  .reader { margin-inline:-12px; padding:14px 8px 18px; min-height:520px; border-radius:18px; }
+  .reader-top { padding-inline:6px; margin-bottom:12px; }
+  .book-stage { min-height:min(70vh,560px); }
+  .book.mobile-single,.book.mobile-single.cover,.book.mobile-single.single-last { width:min(100%,430px); aspect-ratio:630/810; display:block; }
+  .book.mobile-single::after { display:none; }
+  .book.mobile-single .book-page-right { display:none; }
+  .book.mobile-spread { width:100%; aspect-ratio:1260/810; display:grid; }
+  .book.mobile-spread.cover,.book.mobile-spread.single-last { width:56%; aspect-ratio:630/810; display:block; }
+  .reader-title strong { font-size:15px; }
+  .reader-actions button { width:46px; height:46px; }
   .issue-note,.footer-inner { align-items:start;flex-direction:column; }
-  .game-feature { padding:30px;min-height:430px; }.tile-art{opacity:.42}.sudoku-art{opacity:.42}
+  .game-feature { padding:30px;min-height:430px; }
+  .game-feature[data-game-href] { cursor:pointer; }
+  .game-feature[data-game-href]:focus-visible { outline:4px solid var(--baby-blue); outline-offset:4px; }
   .article-modal { padding:10px; }.article-image{height:220px}.article-copy{padding:38px 22px 50px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}

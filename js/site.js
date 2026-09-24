@@ -7,6 +7,20 @@
     menu.setAttribute('aria-expanded', String(open));
   });
 
+  const mobileCards = window.matchMedia('(max-width: 680px)');
+  document.querySelectorAll('[data-game-href]').forEach(card => {
+    const openGame = () => { window.location.href = new URL(card.dataset.gameHref, document.baseURI).href; };
+    card.addEventListener('click', event => {
+      if (!mobileCards.matches || event.target.closest('a,button')) return;
+      openGame();
+    });
+    card.addEventListener('keydown', event => {
+      if (!mobileCards.matches || (event.key !== 'Enter' && event.key !== ' ')) return;
+      event.preventDefault();
+      openGame();
+    });
+  });
+
   const coverStage = document.querySelector('.cover-stage');
   if (coverStage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let trackingReady = false;

@@ -13,6 +13,10 @@
   const statusText = document.getElementById("statusText");
   const statusLight = document.getElementById("statusLight");
   const resetButton = document.getElementById("resetButton");
+  const playAgainButton = document.getElementById("playAgainButton");
+  const helpButton = document.getElementById("helpBtn");
+  const helpModal = document.getElementById("helpModal");
+  const closeHelpButton = document.getElementById("closeHelpBtn");
   const modeButtons = [...document.querySelectorAll("[data-mode]")];
   const xScoreEl = document.getElementById("xScore");
   const oScoreEl = document.getElementById("oScore");
@@ -72,17 +76,24 @@
 
   function computeLayout() {
     const desktop = width >= 1100;
-    const boardSize = Math.max(270, Math.min(desktop ? 540 : 420, width - 36, height - 248));
-    const binHeight = Math.max(132, Math.min(desktop ? 184 : 170, height * .22));
+    const mobile = width < 600;
+    const binHeight = Math.max(mobile ? 150 : 138, Math.min(desktop ? 190 : mobile ? 168 : 174, height * .27));
+    const binBottom = height - (mobile ? 18 : 26);
+    const binTop = binBottom - binHeight;
+    const boardY = mobile ? 152 : Math.max(92, (height - Math.min(desktop ? 540 : 420, width - 36) - binHeight) * .34);
+    const boardSize = Math.max(mobile ? 200 : 270, Math.min(mobile ? 238 : desktop ? 540 : 420, width - (mobile ? 56 : 36), binTop - boardY - 10));
     layout = {
       boardSize,
       cell: boardSize / 3,
       boardX: (width - boardSize) / 2,
-      boardY: Math.max(92, (height - boardSize - binHeight) * .34),
-      binTop: height - binHeight,
+      boardY,
+      binTop,
+      binBottom,
       binHeight,
-      pieceSize: Math.max(22, Math.min(32, width / 22, binHeight / 4.2))
+      pieceSize: Math.max(mobile ? 30 : 28, Math.min(desktop ? 44 : mobile ? 34 : 38, width / (mobile ? 11.5 : 20), binHeight / 3.5))
     };
+    playAgainButton.style.top = `${layout.boardY + layout.boardSize / 2}px`;
+    playfield.style.setProperty("--bin-top", `${layout.binTop}px`);
   }
 
   function addWorldBounds() {
@@ -92,6 +103,7 @@
       Bodies.rectangle(width / 2, height + wall / 2, width + wall * 2, wall, common),
       Bodies.rectangle(-wall / 2, height / 2, wall, height * 2, common),
       Bodies.rectangle(width + wall / 2, height / 2, wall, height * 2, common),
+      Bodies.rectangle(width / 2, layout.binBottom + 9, width, 18, common),
       Bodies.rectangle(10, layout.binTop + layout.binHeight / 2, 18, layout.binHeight, common),
       Bodies.rectangle(width - 10, layout.binTop + layout.binHeight / 2, 18, layout.binHeight, common),
       Bodies.rectangle(width / 2, layout.binTop + layout.binHeight / 2, 18, layout.binHeight, common)
@@ -134,6 +146,7 @@
     winningCells = [];
     drag = null;
     canvas.classList.remove("dragging");
+    playAgainButton.hidden = true;
     if (!keepScore) {
       scores = { X: 0, O: 0 };
       round = 1;
@@ -272,6 +285,7 @@
         setStatus("A perfect little stalemate.", "done");
       }
       updateScoreboard();
+      playAgainButton.hidden = false;
       tossLoosePieces();
       return;
     }
@@ -345,7 +359,7 @@
   function resize() {
     const rect = playfield.getBoundingClientRect();
     width = Math.max(320, Math.round(rect.width));
-    height = Math.max(620, Math.round(rect.height));
+    height = Math.max(width < 600 ? 520 : 620, Math.round(rect.height));
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
@@ -402,13 +416,13 @@
     ctx.save();
     ctx.lineWidth = 3;
 
-    roundedRect(gap, top, binW, layout.binHeight + 30, 14);
+    roundedRect(gap, top, binW, layout.binHeight, 14);
     ctx.fillStyle = "rgba(230,0,18,.12)";
     ctx.fill();
     ctx.strokeStyle = palette.red;
     ctx.stroke();
 
-    roundedRect(width / 2 + gap / 2, top, binW, layout.binHeight + 30, 14);
+    roundedRect(width / 2 + gap / 2, top, binW, layout.binHeight, 14);
     ctx.fillStyle = "rgba(36,86,245,.13)";
     ctx.fill();
     ctx.strokeStyle = palette.blue;
@@ -528,9 +542,35 @@
     newRound(false);
   }));
 
-  resetButton.addEventListener("click", () => {
+  function startNextRound() {
     round += 1;
     newRound(true);
+  }
+
+  resetButton.addEventListener("click", startNextRound);
+  playAgainButton.addEventListener("click", startNextRound);
+
+  function openHelp() {
+    helpModal.hidden = false;
+    helpModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("toss-modal-open");
+    closeHelpButton.focus();
+  }
+
+  function closeHelp() {
+    helpModal.hidden = true;
+    helpModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("toss-modal-open");
+    helpButton.focus();
+  }
+
+  helpButton.addEventListener("click", openHelp);
+  closeHelpButton.addEventListener("click", closeHelp);
+  helpModal.addEventListener("click", event => {
+    if (event.target.closest("[data-close-help]")) closeHelp();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !helpModal.hidden) closeHelp();
   });
 
   const observer = new ResizeObserver(() => {

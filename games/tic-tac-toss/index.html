@@ -12,17 +12,6 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body data-page="tic-tac-toss">
-  <header class="site-header" data-auto-hide-header>
-    <div class="site-header__inner">
-      <a class="signal-brand" href="../../" aria-label="Vern Eide Signal home"><img class="signal-brand-logo" src="../../assets/images/eide-effect-logo.png" alt="The Eide Effect"><span class="signal-brand-word">Vern Eide Signal</span></a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="../../">Home</a>
-        <a href="../../articles/">Articles &amp; Issues</a>
-        <a href="../" aria-current="page" data-no-transition>Play games</a>
-      </nav>
-    </div>
-  </header>
-
   <main class="game-shell">
     <header class="masthead">
       <div class="wordmark" aria-label="Tic Tac Toss">
@@ -35,6 +24,7 @@
           <button class="mode-button active" type="button" data-mode="cpu" aria-pressed="true">1P <span>vs CPU</span></button>
           <button class="mode-button" type="button" data-mode="friend" aria-pressed="false">2P <span>local</span></button>
         </div>
+        <button class="help-button" id="helpBtn" type="button" aria-label="How to play Tic Tac Toss">?</button>
         <button class="reset-button" id="resetButton" type="button">New round ↻</button>
       </div>
     </header>
@@ -47,6 +37,8 @@
       </div>
 
       <canvas id="gameCanvas" role="application" aria-label="Physics Tic-Tac-Toe board. Drag a piece from its bin onto an open square."></canvas>
+
+      <button class="end-round-button" id="playAgainButton" type="button" hidden>New round ↻</button>
 
       <div class="status-card" aria-live="polite">
         <span class="status-light" id="statusLight"></span>
@@ -62,6 +54,21 @@
       </div>
     </section>
   </main>
+
+  <div class="toss-help-modal" id="helpModal" aria-hidden="true" hidden>
+    <div class="toss-help-backdrop" data-close-help></div>
+    <section class="toss-help-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <button class="toss-help-close" id="closeHelpBtn" type="button" aria-label="Close help">×</button>
+      <div class="wordmark-kicker">How to play</div>
+      <h2 id="helpTitle">Tic Tac Toss</h2>
+      <ol>
+        <li>Choose one player against the CPU or two players on the same device.</li>
+        <li>Grab your colored piece from its container and drag it over an open square.</li>
+        <li>Release to snap the piece into place. Get three in a row to win.</li>
+      </ol>
+      <p>If a toss misses the grid, grab the same piece and try again. In one-player mode, the CPU places a blue O after your red X.</p>
+    </section>
+  </div>
 
   <script src="../shared/js/include.js?v=4" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js" defer></script>
