@@ -21,6 +21,18 @@
     });
   });
 
+  document.querySelectorAll('[data-submission-href]').forEach(card => {
+    card.addEventListener('click', event => {
+      if (!mobileCards.matches || event.target.closest('a,button')) return;
+      const destination = card.dataset.submissionHref;
+      if (card.dataset.submissionExternal === 'true') {
+        window.open(destination, '_blank', 'noopener,noreferrer');
+      } else {
+        window.location.href = destination;
+      }
+    });
+  });
+
   const coverStage = document.querySelector('.cover-stage');
   if (coverStage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let trackingReady = false;

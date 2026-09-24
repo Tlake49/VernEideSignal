@@ -6,6 +6,7 @@ A standalone HTML/CSS/JavaScript site for Vern Eide Signal that runs locally and
 - Readable article overlays that dim and blur the page behind them
 - Articles / Previous Issues page with a keyboard-, click- and swipe-friendly page-turning reader
 - Games page with working Verdle, Sudoku and physics-powered Tic Tac Toss games
+- Signal Your Story page with direct story-email and vehicle-submission options
 - Source PDFs plus browser-sized page images for the issue reader
 - A content structure designed to translate cleanly into WordPress later
 
@@ -38,6 +39,7 @@ signal-site/
 ├── index.html              Home (`/`)
 ├── articles/index.html     Web articles and issue reader (`/articles/`)
 ├── games/index.html        Games landing page (`/games/`)
+├── signal-your-story/      Story and vehicle submission links
 ├── css/site.css            Shared Signal visual system
 ├── js/
 │   ├── content.js          Issue and article content
